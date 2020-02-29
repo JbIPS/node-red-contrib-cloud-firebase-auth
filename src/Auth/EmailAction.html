@@ -1,0 +1,157 @@
+<script type="text/x-red" data-template-name="firebase-auth-email-action">
+    <div class="firebase">
+        <div class="form-row">
+            <label for="node-input-admin"><i class="fa fa-cogs"></i> Admin </label>
+            <input type="text" id="node-input-admin">
+        </div>
+        <div class="form-row">
+            <label for="node-input-name"><i class="fa fa-tag"></i> Node Name </label>
+            <input type="text" id="node-input-name">
+        </div>
+				    <div class="form-row" style="position: relative; margin-bottom: 0px;">
+        <label for="node-input-settings"><i class="fa fa-file-code-o"></i> Action settings</span></label>
+        <input type="hidden" id="node-input-settings" autofocus="autofocus">
+        <div style="position: absolute; right:0;display:inline-block; text-align: right; font-size: 0.8em;">
+						<button id="node-settings-expand-editor" class="red-ui-button red-ui-button-small"><i class="fa fa-expand"></i></button>
+        </div>
+    </div>
+		    <div class="form-row node-text-editor-row">
+					<div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-settings-editor" ></div>
+				</div>
+        <div class="form-row">
+            <label for="node-input-type"><i class="fa fa-cog"></i> Action Type </label>
+            <select type="text" id="node-input-linkType">
+                <option value="signin">Sign In</option>
+                <option value="reset">Reset password</option>
+                <option value="verify">Verify email</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-email"><i class="fa fa-envelope"></i> User email </label>
+            <input type="text" id="node-input-email">
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="firebase-auth-email-action">
+    <p>The node generates a link to send via email for authentication related action</p>
+    <h3>Inputs</h3>
+		<p>Received the email in the payload. A type can be defined in the <code>msg.firebase</code> object.</p>
+    <dl class="message-properties">
+        <dt>
+            type <span class="property-type">enum in "signin", "reset" or "verify"</span>
+        </dt>
+        <dd>The type of action link you want to generate</dd>
+    </dl>
+    <h3>Outputs</h3>
+		<p>This node will output the correspondant link in <code>msg.payload</code>, ready to be sent to the user.</p>
+</script>
+
+<style type="text/css">
+    .firebase .node-input-query-container-row {
+        width: 100%;
+    }
+    
+    #node-input-query-container .input-query-row {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: 1fr 3fr;
+        margin-top: 8px;
+    }
+    
+    .input-query-row .input-query-label {
+        text-align: right;
+    }
+    
+    .input-query-row input,
+    .input-query-row select {
+        width: 100%;
+    }
+		.form-row label[for="node-input-settings"] {
+			width: 200px
+		}
+</style>
+
+<script type="text/javascript">
+	RED.nodes.registerType('firebase-auth-email-action', {
+		category: 'firebase',
+		defaults: {
+			name: {
+				required: false
+			},
+			linkType: {
+				value: 'signin',
+				required: true
+			},
+			email: {
+				value: '',
+				required: false
+			},
+			admin: {
+				type: "firebase admin",
+				required: true
+			},
+			settings: {
+				value: '',
+				required: true
+			}
+		},
+		color: "#F3B567",
+		paletteLabel: "Email auth action",
+		inputs: 1,
+		outputs: 1,
+		icon: "file.png",
+		align: "left",
+		label: function() {
+			return this.name || `Generate ${this.linkType} link`;
+		},
+		labelStyle: function() {
+			return (!this.name) ? "node_label_italic" : "";
+		},
+		oneditprepare: function() {
+			var that = this;
+			this.editor = RED.editor.createEditor({
+				id: 'node-input-settings-editor',
+				mode: 'ace/mode/json',
+				value: $("#node-input-settings").val()
+			});
+			$("#node-settings-expand-editor").on("click", function(e) {
+				e.preventDefault();
+				var value = that.editor.getValue();
+				RED.editor.editText({
+					mode: 'json',
+					value: value,
+					width: "Infinity",
+					cursor: that.editor.getCursorPosition(),
+					complete: function(v,cursor) {
+						that.editor.setValue(v, -1);
+						that.editor.gotoLine(cursor.row+1,cursor.column,false);
+						setTimeout(function() {
+							that.editor.focus();
+						},300);
+					}
+				});
+			})
+		},
+		oneditsave: function() {
+			$("#node-input-settings").val(this.editor.getValue());
+			this.editor.destroy();
+			delete this.editor;
+		},
+		oneditcancel: function() {
+			this.editor.destroy();
+			delete this.editor;
+		},
+		oneditresize: function(size) {
+			var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+			var height = $("#dialog-form").height();
+			for (var i=0; i<rows.length; i++) {
+				height -= $(rows[i]).outerHeight(true);
+				}
+				var editorRow = $("#dialog-form>div.node-text-editor-row");
+			height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+			$(".node-text-editor").css("height",height+"px");
+			this.editor.resize();
+		}
+	});
+</script>

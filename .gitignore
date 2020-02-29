@@ -1,3 +1,6 @@
+# IDE
+.vscode
+.*.sw*
 # Logs
 logs
 *.log

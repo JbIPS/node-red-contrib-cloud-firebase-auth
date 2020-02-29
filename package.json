@@ -6,10 +6,9 @@
         "url": "https://github.com/heretse/node-red-contrib-cloud-firebase-auth/issues"
     },
     "bundleDependencies": false,
-    "dependencies": {
-        "firebase-admin": "^7.2.0"
+    "peerDependencies": {
+        "node-red-contrib-cloud-firebase-admin": "^8.6.1"
     },
-    "deprecated": false,
     "description": "Node-RED nodes to handle google cloud Firebase Authentication operations",
     "homepage": "https://github.com/heretse/node-red-contrib-cloud-firebase-auth#readme",
     "keywords": [
@@ -23,8 +22,8 @@
     "name": "node-red-contrib-cloud-firebase-auth",
     "node-red": {
         "nodes": {
-            "firebaseAdmin": "src/Admin/firebaseAdmin.js",
-            "firestoreAuth": "src/Auth/Auth.js"
+            "firestoreAuth": "src/Auth/Auth.js",
+						"firestoreAuthEmailAction": "src/Auth/EmailAction.js"
         }
     },
     "repository": {

@@ -7,7 +7,7 @@
     },
     "bundleDependencies": false,
     "peerDependencies": {
-        "node-red-contrib-cloud-firebase-admin": "^8.6.1"
+        "node-red-contrib-cloud-firebase-admin": "^1.0.0"
     },
     "description": "Node-RED nodes to handle google cloud Firebase Authentication operations",
     "homepage": "https://github.com/heretse/node-red-contrib-cloud-firebase-auth#readme",
